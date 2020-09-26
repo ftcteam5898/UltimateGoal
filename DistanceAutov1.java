@@ -62,12 +62,93 @@ public class DistanceAutov1 extends LinearOpMode {
 
     }
     
-    public void forward(int amt, double edge1, double edge2, double max, double min, double p1, double p2) {
+      public void forward(int amt, double edge1, double edge2, double max, double min, double p1, double p2) {
         
         rf.setTargetPosition(rf.getCurrentPosition() + amt);
-        rb.setTargetPosition(rf.getCurrentPosition() + amt);
-        lf.setTargetPosition(rf.getCurrentPosition() - amt);
-        lb.setTargetPosition(rf.getCurrentPosition() - amt);
+        rb.setTargetPosition(rb.getCurrentPosition() + amt);
+        lf.setTargetPosition(lf.getCurrentPosition() - amt);
+        lb.setTargetPosition(lb.getCurrentPosition() - amt);
+        
+        setRunMode(DcMotor.RunMode.RUN_TO_POSITION);
+        
+        while ((rf.isBusy() && lf.isBusy() && rb.isBusy() && lb.isBusy()) && opModeIsActive()) {
+            
+            double prop = (amt - (rf.getTargetPosition() - rf.getCurrentPosition())) / (double) amt;
+            telemetry.addData("P", prop);
+            telemetry.update();
+            double adjPower = getPower(prop, edge1, edge2, max, min, p1, p2);
+            rf.setPower(adjPower);
+            lf.setPower(adjPower);
+            rb.setPower(adjPower);
+            lb.setPower(adjPower);
+            
+        }
+        
+        stopRobot();
+        
+        setRunMode(DcMotor.RunMode.RUN_USING_ENCODER);
+    }
+    
+    public void backward(int amt, double edge1, double edge2, double max, double min, double p1, double p2) {
+        
+        rf.setTargetPosition(rf.getCurrentPosition() - amt);
+        rb.setTargetPosition(rb.getCurrentPosition() - amt);
+        lf.setTargetPosition(lf.getCurrentPosition() + amt);
+        lb.setTargetPosition(lb.getCurrentPosition() + amt);
+        
+        setRunMode(DcMotor.RunMode.RUN_TO_POSITION);
+        
+        while ((rf.isBusy() && lf.isBusy() && rb.isBusy() && lb.isBusy()) && opModeIsActive()) {
+            
+            double prop = (amt - (rf.getTargetPosition() - rf.getCurrentPosition())) / (double) amt;
+            telemetry.addData("P", prop);
+            telemetry.update();
+            double adjPower = getPower(prop, edge1, edge2, max, min, p1, p2);
+            rf.setPower(adjPower);
+            lf.setPower(adjPower);
+            rb.setPower(adjPower);
+            lb.setPower(adjPower);
+            
+        }
+        
+        stopRobot();
+        
+        setRunMode(DcMotor.RunMode.RUN_USING_ENCODER);
+    }
+    
+    public void right(int amt, double edge1, double edge2, double max, double min, double p1, double p2) {
+        
+        rf.setTargetPosition(rf.getCurrentPosition() - amt);
+        rb.setTargetPosition(rb.getCurrentPosition() + amt);
+        lf.setTargetPosition(lf.getCurrentPosition() - amt);
+        lb.setTargetPosition(lb.getCurrentPosition() + amt);
+        
+        setRunMode(DcMotor.RunMode.RUN_TO_POSITION);
+        
+        while ((rf.isBusy() && lf.isBusy() && rb.isBusy() && lb.isBusy()) && opModeIsActive()) {
+            
+            double prop = (amt - (rf.getTargetPosition() - rf.getCurrentPosition())) / (double) amt;
+            telemetry.addData("P", prop);
+            telemetry.update();
+            double adjPower = getPower(prop, edge1, edge2, max, min, p1, p2);
+            rf.setPower(adjPower);
+            lf.setPower(adjPower);
+            rb.setPower(adjPower);
+            lb.setPower(adjPower);
+            
+        }
+        
+        stopRobot();
+        
+        setRunMode(DcMotor.RunMode.RUN_USING_ENCODER);
+    }
+    
+    public void left(int amt, double edge1, double edge2, double max, double min, double p1, double p2) {
+        
+        rf.setTargetPosition(rf.getCurrentPosition() + amt);
+        rb.setTargetPosition(rb.getCurrentPosition() - amt);
+        lf.setTargetPosition(lf.getCurrentPosition() + amt);
+        lb.setTargetPosition(lb.getCurrentPosition() - amt);
         
         setRunMode(DcMotor.RunMode.RUN_TO_POSITION);
         
