@@ -5,9 +5,9 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
-@Autonomous(name = "FirstAuto1.0", group = "Autonomous")
+@Autonomous(name = "DistanceAutov1", group = "Autonomous")
 
-public class FirstAuto extends LinearOpMode {
+public class DistanceAutov1 extends LinearOpMode {
 
     @Override
     public void runOpMode() {
