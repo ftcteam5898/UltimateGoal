@@ -8,6 +8,8 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 @Autonomous(name = "DistanceAutov1", group = "Autonomous")
 
 public class DistanceAutov1 extends LinearOpMode {
+    
+    private DcMotor lb, lf, rb, rf;
 
     @Override
     public void runOpMode() {
@@ -198,7 +200,7 @@ public class DistanceAutov1 extends LinearOpMode {
     public double evaluateNormal(double m, double s, double x, double max) {
         
         double power = -Math.pow(x - m, 2) / (2 * Math.pow(s, 2));
-        return max * Math.pow(Math.e, power)
+        return max * Math.pow(Math.E, power)
         
     }
 }
