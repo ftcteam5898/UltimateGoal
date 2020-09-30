@@ -19,7 +19,7 @@ public class DistanceAutov1 extends LinearOpMode {
 
         //All right, let's see what we can do!
         setStopMode(DcMotor.ZeroPowerBehavior.BRAKE);
-        forward(1000, 0.1, 0.5, 0.65, 0.15, 0.333, 0.333);
+        forward(1700, 0.1, 0.5, 0.65, 0.15, 0.333, 0.333);
 
         while (opModeIsActive()) {}
     }
