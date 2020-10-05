@@ -7,13 +7,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 @TeleOp(name = "OrbitalTeleOpv1", group = "TeleOp")
 public class OrbitalTeleOpv1 extends LinearOpMode {
 
-    private DcMotor lb, lf, rb, rf;
-     
-    private int lp = 0, rp = 0;
-
-    private long lastPress = -1;
-
-    private boolean home = false;
+    private DcMotor lb, lf, rb, rf, in;
 
     @Override
     public void runOpMode() {
@@ -32,6 +26,9 @@ public class OrbitalTeleOpv1 extends LinearOpMode {
             final double v2 = r * Math.sin(robotAngle) + rightX;
             final double v3 = r * Math.sin(robotAngle) - rightX;
             final double v4 = r * Math.cos(robotAngle) + rightX;
+            
+            if (gamepad1.a)
+                in.setPower(1.0);
 
             //Set motor powers
             lf.setPower(v1);
@@ -51,6 +48,7 @@ public class OrbitalTeleOpv1 extends LinearOpMode {
         lf = hardwareMap.get(DcMotor.class, "lf");
         rb = hardwareMap.get(DcMotor.class, "rb");
         rf = hardwareMap.get(DcMotor.class, "rf");
+        in = hardwareMap.get(DcMotor.class, "in");
 
     }
 
