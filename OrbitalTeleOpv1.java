@@ -9,6 +9,10 @@ public class OrbitalTeleOpv1 extends LinearOpMode {
 
     private DcMotor lb, lf, rb, rf, in;
 
+    private long lastPress = -1;
+
+    private boolean home = false;
+
     @Override
     public void runOpMode() {
 
@@ -26,16 +30,18 @@ public class OrbitalTeleOpv1 extends LinearOpMode {
             final double v2 = r * Math.sin(robotAngle) + rightX;
             final double v3 = r * Math.sin(robotAngle) - rightX;
             final double v4 = r * Math.cos(robotAngle) + rightX;
-            
-            if (gamepad1.a)
-                in.setPower(1.0);
 
             //Set motor powers
             lf.setPower(v1);
             rf.setPower(-v2);
             lb.setPower(v3);
             rb.setPower(-v4);
-
+            
+            if (gamepad2.a)
+                in.setPower(1.0);
+            else
+                in.setPower(0.0);
+            
 
         }
 
