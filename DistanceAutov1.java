@@ -8,9 +8,9 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 @Autonomous(name = "DistanceAutov1", group = "Autonomous")
 
 public class DistanceAutov1 extends LinearOpMode {
-    
-    private DcMotor lb, lf, rb, rf;
 
+    private DcMotor lb, lf, rb, rf;
+    
     @Override
     public void runOpMode() {
 
@@ -19,7 +19,8 @@ public class DistanceAutov1 extends LinearOpMode {
 
         //All right, let's see what we can do!
         setStopMode(DcMotor.ZeroPowerBehavior.BRAKE);
-        forward(1700, 0.1, 0.5, 0.65, 0.15, 0.333, 0.333);
+        forward(2800, 0.1, 0.5, 0.65, 0.15, 0.333, 0.333);
+        backward(200, 0.1, 0.5, 0.65, 0.15, 0.333, 0.333);
 
         while (opModeIsActive()) {}
     }
@@ -189,7 +190,7 @@ public class DistanceAutov1 extends LinearOpMode {
             } else {
                 
                 double amtNormDone = amtDone / edge1;
-                return min + evaluateNormal(1, p1, amtNormDone, max - min)
+                return min + evaluateNormal(1, p1, amtNormDone, max - min);
                 
             }
             
@@ -200,7 +201,7 @@ public class DistanceAutov1 extends LinearOpMode {
     public double evaluateNormal(double m, double s, double x, double max) {
         
         double power = -Math.pow(x - m, 2) / (2 * Math.pow(s, 2));
-        return max * Math.pow(Math.E, power)
+        return max * Math.pow(Math.E, power);
         
     }
 }
