@@ -49,21 +49,12 @@ public class OpenCVAuto extends LinearOpMode
         telemetry.addLine("Waiting for start");
         telemetry.update();
         
-        setupHardware();
         waitForStart();
-        
-        int[] positionVal = new int[50];
-        
-        for (int i = 0; i < 50; i++) {
+
+        while (opModeIsActive())
+        {
             telemetry.addData("Analysis", pipeline.getAnalysis());
             telemetry.addData("Position", pipeline.position);
-            if (pipeline.position = FOUR) 
-                positionVal[i] = 4;
-            else if (pipeline.position = ONE)
-                positionVal[i] = 1;
-            else
-                positionVal[i] = 0;
-            
             telemetry.update();
 
 
@@ -71,27 +62,6 @@ public class OpenCVAuto extends LinearOpMode
             // Don't burn CPU cycles busy-looping in this sample
             sleep(50);
         }
-        
-        int pos = mode(positionVal);
-        
-        if (pos == 0) {
-          
-            
-          
-        }
-        else if (pos == 1) {
-          
-            
-          
-        }
-        else {
-          
-            
-          
-        }
-
-        while (opModeIsActive()) {}
-        
     }
 
     public static class SkystoneDeterminationPipeline extends OpenCvPipeline
@@ -378,32 +348,4 @@ public class OpenCVAuto extends LinearOpMode
         return max * Math.pow(Math.E, power);
 
     }
-    
-    public static int mode(int a[]) {
-      
-        int maxValue, maxCount;
-
-        for (int i = 0; i < a.length; ++i) {
-          
-            int count = 0;
-            
-            for (int j = 0; j < a.length; ++j) {
-              
-                if (a[j] == a[i]) ++count;
-                
-            }
-            
-            if (count > maxCount) {
-              
-                maxCount = count;
-                maxValue = a[i];
-            
-            }
-            
-        }
-
-        return maxValue;
-        
-    }
-    
 }
