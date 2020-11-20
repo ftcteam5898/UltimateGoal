@@ -16,9 +16,9 @@ import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
 import org.openftc.easyopencv.OpenCvPipeline;
 
-@Autonomous(name = "OpenCVAuto", group = "Autonomous")
+@Autonomous(name = "OpenCVAutov2", group = "Autonomous")
 
-public class OpenCVAuto extends LinearOpMode
+public class OpenCVAutov2 extends LinearOpMode
 {
     OpenCvCamera webcam;
     private DcMotor lb, lf, rb, rf;
@@ -49,12 +49,21 @@ public class OpenCVAuto extends LinearOpMode
         telemetry.addLine("Waiting for start");
         telemetry.update();
         
+        setupHardware();
         waitForStart();
-
-        while (opModeIsActive())
-        {
+        
+        int[] positionVal = new int[50];
+        
+        for (int i = 0; i < 20; i++) {
             telemetry.addData("Analysis", pipeline.getAnalysis());
             telemetry.addData("Position", pipeline.position);
+            if (pipeline.position == SkystoneDeterminationPipeline.RingPosition.FOUR)
+                positionVal[i] = 4;
+            else if (pipeline.position == SkystoneDeterminationPipeline.RingPosition.ONE)
+                positionVal[i] = 1;
+            else
+                positionVal[i] = 0;
+            
             telemetry.update();
 
 
@@ -62,6 +71,28 @@ public class OpenCVAuto extends LinearOpMode
             // Don't burn CPU cycles busy-looping in this sample
             sleep(50);
         }
+        
+        int pos = mode(positionVal);
+        
+        if (pos == 0) {
+          
+            telemetry.addData("x","0");
+          
+        }
+        else if (pos == 1) {
+          
+            telemetry.addData("x","1");
+          
+        }
+        else {
+          
+            telemetry.addData("x","4");
+          
+        }
+		telemetry.update();
+
+        while (opModeIsActive()) {}
+        
     }
 
     public static class SkystoneDeterminationPipeline extends OpenCvPipeline
@@ -85,13 +116,13 @@ public class OpenCVAuto extends LinearOpMode
         /*
          * The core values which define the location and size of the sample regions
          */
-        static final Point REGION1_TOPLEFT_ANCHOR_POINT = new Point(181,98);
+        static final Point REGION1_TOPLEFT_ANCHOR_POINT = new Point(140,110);
 
-        static final int REGION_WIDTH = 35;
-        static final int REGION_HEIGHT = 25;
+        static final int REGION_WIDTH = 40;
+        static final int REGION_HEIGHT = 50;
 
-        final int FOUR_RING_THRESHOLD = 150;
-        final int ONE_RING_THRESHOLD = 135;
+        final int FOUR_RING_THRESHOLD = 140;
+        final int ONE_RING_THRESHOLD = 128;
 
         Point region1_pointA = new Point(
                 REGION1_TOPLEFT_ANCHOR_POINT.x,
@@ -348,4 +379,33 @@ public class OpenCVAuto extends LinearOpMode
         return max * Math.pow(Math.E, power);
 
     }
+    
+    public static int mode(int a[]) {
+
+        int maxValue = 0, maxCount = 0, i, j;
+
+        for (i = 0; i < 20; ++i) {
+
+            int count = 0;
+
+            for (j = 0; j < 20; ++j) {
+
+                if (a[j] == a[i])
+
+                    ++count;
+
+            }
+
+            if (count > maxCount) {
+
+                maxCount = count;
+                maxValue = a[i];
+
+            }
+
+        }
+
+        return maxValue;
+    }
+    
 }
