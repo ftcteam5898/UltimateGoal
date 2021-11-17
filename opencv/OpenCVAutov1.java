@@ -30,7 +30,7 @@ public class OpenCVAutov1 extends LinearOpMode
 
     int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
     webcam = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
-    pipeline = new SkystoneDeterminationPipeline();
+    pipeline = new DuckPipeline();
     webcam.setPipeline(pipeline);
 
     // We set the viewport policy to optimized view so the preview doesn't appear 90 deg
@@ -53,7 +53,8 @@ public class OpenCVAutov1 extends LinearOpMode
 
     while (opModeIsActive())
     {
-      telemetry.addData("Analysis", pipeline.getAnalysis());
+      telemetry.addData("Analysis 1", pipeline.getAnalysis1());
+      telemetry.addData("Analysis 2", pipeline.getAnalysis2());
       telemetry.addData("Position", pipeline.position);
       telemetry.update();
 
@@ -64,16 +65,16 @@ public class OpenCVAutov1 extends LinearOpMode
     }
   }
 
-  public static class SkystoneDeterminationPipeline extends OpenCvPipeline
+  public static class DuckPipeline extends OpenCvPipeline
   {
     /*
      * An enum to define the ring position
      */
-    public enum RingPosition
+    public enum DuckPosition
     {
-      FOUR,
-      ONE,
-      NONE
+      LEFT,
+      MIDDLE,
+      RIGHT
     }
 
     /*
@@ -86,13 +87,14 @@ public class OpenCVAutov1 extends LinearOpMode
      * The core values which define the location and size of the sample regions
      */
     static final Point REGION1_TOPLEFT_ANCHOR_POINT = new Point(130.0D, 140.0D);
+    static final Point REGION2_TOPLEFT_ANCHOR_POINT = new Point(130.0D, 140.0D);
     // 139 155
 
     static final int REGION_WIDTH = 40;
     static final int REGION_HEIGHT = 40;
 
-    final int FOUR_RING_THRESHOLD = 144;
-    final int ONE_RING_THRESHOLD = 130;
+    final int LEFT_THRESHOLD = 144;
+    final int MIDDLE_THRESHOLD = 130;
 
     Point region1_pointA = new Point(
             REGION1_TOPLEFT_ANCHOR_POINT.x,
@@ -101,16 +103,25 @@ public class OpenCVAutov1 extends LinearOpMode
             REGION1_TOPLEFT_ANCHOR_POINT.x + REGION_WIDTH,
             REGION1_TOPLEFT_ANCHOR_POINT.y + REGION_HEIGHT);
 
+    Point region2_pointA = new Point(
+            REGION2_TOPLEFT_ANCHOR_POINT.x,
+            REGIO2_TOPLEFT_ANCHOR_POINT.y);
+    Point region2_pointB = new Point(
+            REGION2_TOPLEFT_ANCHOR_POINT.x + REGION_WIDTH,
+            REGION2_TOPLEFT_ANCHOR_POINT.y + REGION_HEIGHT);
+
     /*
      * Working variables
      */
     Mat region1_Cb;
+    Mat region2_Cb;
     Mat YCrCb = new Mat();
     Mat Cb = new Mat();
     int avg1;
+    int avg2;
 
     // Volatile since accessed by OpMode thread w/o synchronization
-    private volatile RingPosition position = RingPosition.FOUR;
+    private volatile DuckPosition position = DuckPosition.LEFT;
 
     /*
      * This function takes the RGB frame, converts to YCrCb,
@@ -128,6 +139,7 @@ public class OpenCVAutov1 extends LinearOpMode
       inputToCb(firstFrame);
 
       region1_Cb = Cb.submat(new Rect(region1_pointA, region1_pointB));
+      region2_Cb = Cb.submat(new Rect(region2_pointA, region2_pointB));
     }
 
     @Override
@@ -136,6 +148,7 @@ public class OpenCVAutov1 extends LinearOpMode
       inputToCb(input);
 
       avg1 = (int) Core.mean(region1_Cb).val[0];
+      avg2 = (int) Core.mean(region2_Cb).val[0];
 
       Imgproc.rectangle(
               input, // Buffer to draw on
@@ -143,14 +156,21 @@ public class OpenCVAutov1 extends LinearOpMode
               region1_pointB, // Second point which defines the rectangle
               BLUE, // The color the rectangle is drawn in
               2); // Thickness of the rectangle lines
+      
+      Imgproc.rectangle(
+              input, // Buffer to draw on
+              region_pointA, // First point which defines the rectangle
+              region2_pointB, // Second point which defines the rectangle
+              BLUE, // The color the rectangle is drawn in
+              2); // Thickness of the rectangle lines
 
-      position = RingPosition.FOUR; // Record our analysis
-      if(avg1 > FOUR_RING_THRESHOLD){
-        position = RingPosition.FOUR;
-      }else if (avg1 > ONE_RING_THRESHOLD){
-        position = RingPosition.ONE;
+      position = DuckPosition.LEFT; // Record our analysis
+      if(avg1 > LEFT_THRESHOLD){
+        position = DuckPosition.LEFT;
+      }else if (avg1 > MIDDLE_THRESHOLD){
+        position = DuckPosition.MIDDLE;
       }else{
-        position = RingPosition.NONE;
+        position = DuckPosition.RIGHT;
       }
 
       Imgproc.rectangle(
@@ -159,13 +179,25 @@ public class OpenCVAutov1 extends LinearOpMode
               region1_pointB, // Second point which defines the rectangle
               GREEN, // The color the rectangle is drawn in
               -1); // Negative thickness means solid fill
+      
+      Imgproc.rectangle(
+              input,
+              region2_pointA,
+              region2_pointB,
+              GREEN,
+              -1);
 
       return input;
     }
 
-    public int getAnalysis()
+    public int getAnalysis1()
     {
       return avg1;
+    }
+
+    public int getAnalysis2()
+    {
+      return avg2;
     }
 
 
